@@ -3,6 +3,12 @@
 <head>
     <title>Fake News Detector</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <script>
+        function showLoader() {
+            document.getElementById("loader").style.display = "block";
+        }
+    </script>
 </head>
 
 <body>
@@ -10,11 +16,16 @@
 <div class="container">
     <h1>📰 Fake News Detection System</h1>
 
-    <form action="/detect" method="post">
-        <textarea name="news" placeholder="Paste news article here..."></textarea>
+    <form action="/detect" method="post" onsubmit="showLoader()">
+        <textarea name="news" placeholder="Paste news article here..." required></textarea>
         <br>
         <button type="submit">Detect News</button>
     </form>
+
+    <!-- Loader -->
+    <div id="loader" style="display:none;">
+        <p>⏳ Analyzing...</p>
+    </div>
 
     {% if prediction %}
         <div class="result">
