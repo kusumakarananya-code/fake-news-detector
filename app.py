@@ -21,7 +21,7 @@ def detect():
     
     result = "Real" if prediction==1 else "Fake"
     
-    return jsonify({"result":result})
+    return render_template("detect.html", prediction=result)
 
 import os
 
