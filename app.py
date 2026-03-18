@@ -64,9 +64,27 @@ def login():
         return jsonify({"msg": "Login success"})
     else:
         return jsonify({"msg": "Invalid credentials"})
+    
+    import requests
+
+@app.route('/check_url', methods=['POST'])
+def check_url():
+    url = request.json['url']
+
+    response = requests.get(url)
+    text = response.text[:1000]  # simple extraction
+
+    vect = vectorizer.transform([text])
+    pred = model.predict(vect)[0]
+
+    return jsonify({
+        "prediction": "Fake" if pred==0 else "Real"
+    })
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    port = int(os.environ.get("PORT", 10000))
+ import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

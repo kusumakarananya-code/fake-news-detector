@@ -22,3 +22,16 @@ try {
 } catch (err) {
   alert("Server error. Please try again.");
 }
+
+async function checkURL(){
+ let url = document.getElementById("urlInput").value;
+
+ let res = await fetch("http://localhost:5000/check_url", {
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body: JSON.stringify({url})
+ });
+
+ let data = await res.json();
+ alert(data.prediction);
+}
