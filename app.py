@@ -90,6 +90,10 @@ def check_url():
         "prediction": "Fake" if pred == 0 else "Real"
     })
 
+@app.route('/')
+def home():
+    return "Fake News Detector API is running 🚀"
+
 
 # ================= RUN =================
 if __name__ == "__main__":
