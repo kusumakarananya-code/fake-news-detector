@@ -1,28 +1,22 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import pickle
-import mysql.connector
+import requests
+import os
 
 app = Flask(__name__)
 
-client = MongoClient("mongodb+srv://kusumakarananya_db_user:ananya1234@cluster0.uqyqiay.mongodb.net/?appName=Cluster0")
-
+# MongoDB Connection
+client = MongoClient("mongodb+srv://kusumakarananya_db_user:ananya1234@cluster0.uqyqiay.mongodb.net/?retryWrites=true&w=majority")
 db = client["fake_news_project"]
 collection = db["history"]
+users_collection = db["users"]
 
+# Load ML Model
 model = pickle.load(open('model.pkl', 'rb'))
 vectorizer = pickle.load(open('vectorizer.pkl', 'rb'))
 
-# DB connection
-conn = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Ananya@19",
-    database="fake_news_project"
-)
-
-cursor = conn.cursor()
-
+# ================= PREDICT =================
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json['news']
@@ -33,63 +27,71 @@ def predict():
 
     result = "Fake" if pred == 0 else "Real"
 
-    cursor.execute(
-        "INSERT INTO history (news_text, result) VALUES (%s, %s)",
-        (data, result)
-    )
-    conn.commit()
+    # Save to MongoDB
+    collection.insert_one({
+        "news": data,
+        "result": result
+    })
 
-    return jsonify({"prediction": result, "confidence": round(prob,2)})
+    return jsonify({
+        "prediction": result,
+        "confidence": round(prob, 2)
+    })
 
 
+# ================= HISTORY =================
 @app.route('/history', methods=['GET'])
 def history():
-    cursor.execute("SELECT * FROM history")
-    return jsonify(cursor.fetchall())
+    data = list(collection.find({}, {"_id": 0}))
+    return jsonify(data)
 
+
+# ================= REGISTER =================
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
-    cursor.execute(
-        "INSERT INTO users (username, password) VALUES (%s, %s)",
-        (data['username'], data['password'])
-    )
-    conn.commit()
+
+    users_collection.insert_one({
+        "username": data['username'],
+        "password": data['password']
+    })
+
     return jsonify({"msg": "User registered"})
 
+
+# ================= LOGIN =================
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    cursor.execute(
-        "SELECT * FROM users WHERE username=%s AND password=%s",
-        (data['username'], data['password'])
-    )
-    user = cursor.fetchone()
+
+    user = users_collection.find_one({
+        "username": data['username'],
+        "password": data['password']
+    })
 
     if user:
         return jsonify({"msg": "Login success"})
     else:
         return jsonify({"msg": "Invalid credentials"})
-    
-    import requests
 
+
+# ================= URL CHECK =================
 @app.route('/check_url', methods=['POST'])
 def check_url():
     url = request.json['url']
 
     response = requests.get(url)
-    text = response.text[:1000]  # simple extraction
+    text = response.text[:1000]
 
     vect = vectorizer.transform([text])
     pred = model.predict(vect)[0]
 
     return jsonify({
-        "prediction": "Fake" if pred==0 else "Real"
+        "prediction": "Fake" if pred == 0 else "Real"
     })
 
-if __name__ == '__main__':
- import os
 
+# ================= RUN =================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

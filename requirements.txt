@@ -3,6 +3,5 @@ gunicorn
 pandas
 numpy
 scikit-learn
-mysql-connector-python
 requests
 pymongo
