@@ -1,8 +1,14 @@
 from flask import Flask, request, jsonify
+from pymongo import MongoClient
 import pickle
 import mysql.connector
 
 app = Flask(__name__)
+
+client = MongoClient("mongodb+srv://kusumakarananya_db_user:ananya1234@cluster0.uqyqiay.mongodb.net/?appName=Cluster0")
+
+db = client["fake_news_project"]
+collection = db["history"]
 
 model = pickle.load(open('model.pkl', 'rb'))
 vectorizer = pickle.load(open('vectorizer.pkl', 'rb'))
@@ -80,7 +86,6 @@ def check_url():
     return jsonify({
         "prediction": "Fake" if pred==0 else "Real"
     })
-
 
 if __name__ == '__main__':
  import os
