@@ -1,7 +1,7 @@
 async function checkNews() {
   let news = document.getElementById("newsInput").value;
 
-  let res = await fetch("http://localhost:5000/predict", {
+  let res = await fetch("https://fake-news-detector-7-j6ru.onrender.com/predict", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ news })
@@ -17,7 +17,7 @@ document.getElementById("result").innerHTML = `
 }
 
 try {
-  let res = await fetch("http://localhost:5000/predict", {...});
+  let res = await fetch("https://fake-news-detector-7-j6ru.onrender.com", {...});
   let data = await res.json();
 } catch (err) {
   alert("Server error. Please try again.");
@@ -26,7 +26,7 @@ try {
 async function checkURL(){
  let url = document.getElementById("urlInput").value;
 
- let res = await fetch("http://localhost:5000/check_url", {
+ let res = await fetch("https://fake-news-detector-7-j6ru.onrender.com/check_url", {
    method:"POST",
    headers:{"Content-Type":"application/json"},
    body: JSON.stringify({url})

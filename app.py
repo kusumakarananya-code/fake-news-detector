@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
+from flask_cors import CORS
+CORS(app)
 import pickle
 import requests
 import os
