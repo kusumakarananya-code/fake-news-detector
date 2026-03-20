@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from flask_cors import CORS
-CORS(app)
 import pickle
 import requests
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 # MongoDB Connection
 client = MongoClient("mongodb+srv://kusumakarananya_db_user:ananya1234@cluster0.uqyqiay.mongodb.net/?retryWrites=true&w=majority")
