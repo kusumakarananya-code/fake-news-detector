@@ -1,37 +1,54 @@
 async function checkNews() {
   let news = document.getElementById("newsInput").value;
 
-  let res = await fetch("https://fake-news-detector-7-j6ru.onrender.com/predict", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ news })
-  });
+  if (!news) {
+    alert("Please enter news text");
+    return;
+  }
 
-  let data = await res.json();
-  document.getElementById("result").innerText = data.prediction + " (" + data.confidence + "%)";
+  try {
+    let res = await fetch("https://fake-news-detector-8-v7qs.onrender.com.com/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ news: news })
+    });
 
-document.getElementById("result").innerHTML = `
-  <b>${data.prediction}</b><br>
-  Confidence: ${data.confidence}%
-`;
+    let data = await res.json();
+
+    document.getElementById("result").innerHTML = `
+      <b>${data.prediction}</b><br>
+      Confidence: ${data.confidence}%
+    `;
+
+  } catch (err) {
+    alert("Server error. Please try again.");
+    console.error(err);
+  }
 }
 
-try {
-  let res = await fetch("https://fake-news-detector-7-j6ru.onrender.com", {...});
-  let data = await res.json();
-} catch (err) {
-  alert("Server error. Please try again.");
-}
 
-async function checkURL(){
- let url = document.getElementById("urlInput").value;
+// ================= URL CHECK =================
+async function checkURL() {
+  let url = document.getElementById("urlInput").value;
 
- let res = await fetch("https://fake-news-detector-7-j6ru.onrender.com/check_url", {
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body: JSON.stringify({url})
- });
+  if (!url) {
+    alert("Enter URL first");
+    return;
+  }
 
- let data = await res.json();
- alert(data.prediction);
+  try {
+    let res = await fetch("https://fake-news-detector-8-v7qs.onrender.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: url })
+    });
+
+    let data = await res.json();
+
+    alert("Prediction: " + data.prediction);
+
+  } catch (err) {
+    alert("Error checking URL");
+    console.error(err);
+  }
 }
