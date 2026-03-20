@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Fake News Detector</title>
-  <link rel="stylesheet" href="style.css">
+ <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <nav>
@@ -19,8 +19,7 @@
   <button onclick="checkNews()">Check News</button>
 
   <h2 id="result"></h2>
-
-  <script src="script.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 
   <input id="urlInput" placeholder="Enter news URL">
 <button onclick="checkURL()">Check URL</button>

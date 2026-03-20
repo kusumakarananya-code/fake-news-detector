@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from pymongo import MongoClient
 from flask_cors import CORS
 import pickle
@@ -94,7 +94,23 @@ def check_url():
 
 @app.route('/')
 def home():
-    return "Fake News Detector API is running 🚀"
+    return render_template("index.html")
+
+@app.route('/about')
+def about():
+    return render_template("about.html")
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template("dashboard.html")
+
+@app.route('/dataset')
+def dataset():
+    return render_template("dataset.html")
+
+@app.route('/contact')
+def contact():
+    return render_template("contact.html")
 
 
 # ================= RUN =================
