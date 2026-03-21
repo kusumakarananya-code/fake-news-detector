@@ -21,25 +21,30 @@ vectorizer = pickle.load(open('vectorizer.pkl', 'rb'))
 # ================= PREDICT =================
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.json['news']
-    vect = vectorizer.transform([data])
+    try:
+        data = request.json['news']
+        print("Received:", data)
 
-    pred = model.predict(vect)[0]
-    prob = model.predict_proba(vect)[0].max() * 100
+        vect = vectorizer.transform([data])
 
-    result = "Fake" if pred == 0 else "Real"
+        pred = model.predict(vect)[0]
+        prob = model.predict_proba(vect)[0].max() * 100
 
-    # Save to MongoDB
-    collection.insert_one({
-        "news": data,
-        "result": result
-    })
+        result = "Fake" if pred == 0 else "Real"
 
-    return jsonify({
-        "prediction": result,
-        "confidence": round(prob, 2)
-    })
+        collection.insert_one({
+            "news": data,
+            "result": result
+        })
 
+        return jsonify({
+            "prediction": result,
+            "confidence": round(prob, 2)
+        })
+
+    except Exception as e:
+        print("ERROR:", str(e))   # 🔥 THIS WILL SHOW ERROR IN RENDER LOGS
+        return jsonify({"error": "Server error"}), 500
 
 # ================= HISTORY =================
 @app.route('/history', methods=['GET'])
@@ -64,17 +69,35 @@ def register():
 # ================= LOGIN =================
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.json
+    try:
+        data = request.get_json()
 
-    user = users_collection.find_one({
-        "username": data['username'],
-        "password": data['password']
-    })
+        if not data:
+            return jsonify({"msg": "No data received"}), 400
 
-    if user:
-        return jsonify({"msg": "Login success"})
-    else:
-        return jsonify({"msg": "Invalid credentials"})
+        username = data.get('username')
+        password = data.get('password')
+
+        print("Login attempt:", username, password)  # 🔍 debug
+
+        if not username or not password:
+            return jsonify({"msg": "Missing fields"}), 400
+
+        user = users_collection.find_one({
+            "username": username,
+            "password": password
+        })
+
+        if user:
+            print("Login success")
+            return jsonify({"msg": "Login success"})
+        else:
+            print("Invalid login")
+            return jsonify({"msg": "Invalid credentials"})
+
+    except Exception as e:
+        print("LOGIN ERROR:", str(e))   # 🔥 important
+        return jsonify({"msg": "Server error"}), 500
 
 
 # ================= URL CHECK =================

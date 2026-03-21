@@ -1,3 +1,4 @@
+// ================= NEWS CHECK =================
 async function checkNews() {
   let news = document.getElementById("newsInput").value;
 
@@ -7,7 +8,7 @@ async function checkNews() {
   }
 
   try {
-    let res = await fetch("https://fake-news-detector-8-v7qs.onrender.com.com/predict", {
+    let res = await fetch("/predict", {   // ✅ FIXED
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ news: news })
@@ -16,7 +17,9 @@ async function checkNews() {
     let data = await res.json();
 
     document.getElementById("result").innerHTML = `
-      <b>${data.prediction}</b><br>
+      <b style="color:${data.prediction === "Fake" ? "red" : "green"}">
+        ${data.prediction}
+      </b><br>
       Confidence: ${data.confidence}%
     `;
 
@@ -37,7 +40,7 @@ async function checkURL() {
   }
 
   try {
-    let res = await fetch("https://fake-news-detector-8-v7qs.onrender.com", {
+    let res = await fetch("/check_url", {   // ✅ FIXED
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url: url })
@@ -51,4 +54,29 @@ async function checkURL() {
     alert("Error checking URL");
     console.error(err);
   }
+
+  async function register() {
+  let username = document.getElementById("regUser").value;
+  let password = document.getElementById("regPass").value;
+
+  if (!username || !password) {
+    alert("Enter username and password");
+    return;
+  }
+
+  try {
+    let res = await fetch("/register", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ username, password })
+    });
+
+    let data = await res.json();
+    alert(data.msg);
+
+  } catch (err) {
+    alert("Registration failed");
+    console.error(err);
+  }
+}
 }

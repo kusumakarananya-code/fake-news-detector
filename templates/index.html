@@ -5,13 +5,13 @@
  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="dataset.html">Dataset</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+<nav>
+  <a href="/">Home</a>
+  <a href="/about">About</a>
+  <a href="/dashboard">Dashboard</a>
+  <a href="/dataset">Dataset</a>
+  <a href="/contact">Contact</a>
+</nav>
 
   <h1>Fake News Detector</h1>
 
@@ -23,6 +23,13 @@
 
   <input id="urlInput" placeholder="Enter news URL">
 <button onclick="checkURL()">Check URL</button>
+
+<h2>Register</h2>
+
+<input id="regUser" placeholder="Username">
+<input id="regPass" type="password" placeholder="Password">
+
+<button onclick="register()">Register</button>
 
 </body>
 </html>
