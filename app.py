@@ -22,10 +22,12 @@ vectorizer = pickle.load(open('vectorizer.pkl', 'rb'))
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        data = request.json['news']
-        print("Received:", data)
+        news = request.form.get('news') or request.json.get('news')
 
-        vect = vectorizer.transform([data])
+        if not news:
+            return jsonify({"error": "No news provided"}), 400
+
+        vect = vectorizer.transform([news])
 
         pred = model.predict(vect)[0]
         prob = model.predict_proba(vect)[0].max() * 100
@@ -33,7 +35,7 @@ def predict():
         result = "Fake" if pred == 0 else "Real"
 
         collection.insert_one({
-            "news": data,
+            "news": news,
             "result": result
         })
 
@@ -43,7 +45,7 @@ def predict():
         })
 
     except Exception as e:
-        print("ERROR:", str(e))   # 🔥 THIS WILL SHOW ERROR IN RENDER LOGS
+        print("ERROR:", str(e))
         return jsonify({"error": "Server error"}), 500
 
 # ================= HISTORY =================
@@ -56,14 +58,19 @@ def history():
 # ================= REGISTER =================
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.json
+
+    username = request.form.get('username') or request.json.get('username')
+    password = request.form.get('password') or request.json.get('password')
+
+    if not username or not password:
+        return jsonify({"msg": "Missing fields"}), 400
 
     users_collection.insert_one({
-        "username": data['username'],
-        "password": data['password']
+        "username": username,
+        "password": password
     })
 
-    return jsonify({"msg": "User registered"})
+    return jsonify({"msg": "User registered successfully"})
 
 
 # ================= LOGIN =================
@@ -103,7 +110,11 @@ def login():
 # ================= URL CHECK =================
 @app.route('/check_url', methods=['POST'])
 def check_url():
-    url = request.json['url']
+
+    url = request.form.get('url') or request.json.get('url')
+
+    if not url:
+        return jsonify({"error": "No URL provided"}), 400
 
     response = requests.get(url)
     text = response.text[:1000]
