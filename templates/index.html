@@ -1,73 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Fake News Detector</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake News Detector</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+
 </head>
 
 <body>
 
-<nav>
-  <a href="/">Home</a>
-  <a href="/about">About</a>
-  <a href="/dashboard">Dashboard</a>
-  <a href="/dataset">Dataset</a>
-  <a href="/contact">Contact</a>
-</nav>
+<div class="navbar">
+<div class="logo">Fake News Detector</div>
+<div class="nav-links">
+<a href="/">Home</a>
+<a href="/login">Login</a>
+<a href="/register">Register</a>
+</div>
+</div>
 
-
-<h1>Fake News Detector</h1>
-
-
-<!-- NEWS CHECK -->
-<textarea id="newsInput"
-placeholder="Enter news text here..."></textarea>
-
-<button onclick="checkNews()">Check News</button>
-
-
-<h2 id="predictionResult"></h2>
-<h3 id="confidenceResult"></h3>
-
-
-
-<!-- URL CHECK -->
-<input id="urlInput"
-placeholder="Enter news URL">
-
-<button onclick="checkURL()">Check URL</button>
-
-<h2 id="urlResult"></h2>
-
-
-
-<!-- REGISTER -->
-<h2>Register</h2>
-
-<input id="regUser"
-placeholder="Username">
-
-<input id="regPass"
-type="password"
-placeholder="Password">
-
-<button onclick="registerUser()">Register</button>
-
-<h3 id="registerResult"></h3>
-
-
+<div class="container">
+<div class="card">
+<h2>Check News Authenticity</h2>
+<textarea placeholder="Paste your news here..."></textarea>
+<button onclick="predictNews()">Check Now</button>
+<div class="result" id="result"></div>
+</div>
+</div>
 
 <script>
 
-async function checkNews(){
+async function predictNews(){
 
-const news =
-document.getElementById("newsInput").value;
+let news =
+document.querySelector("textarea").value;
+
+let resultBox =
+document.getElementById("result");
+
+resultBox.innerHTML =
+"🔍 Checking authenticity...";
 
 
-const response = await fetch("/predict", {
+let response =
+await fetch("/predict",{
 
 method:"POST",
 
@@ -82,94 +61,29 @@ news:news
 });
 
 
-const result =
+let data =
 await response.json();
 
 
-document.getElementById("predictionResult").innerHTML =
-result.prediction;
+resultBox.innerHTML =
+data.prediction + " (" + data.confidence + "% confidence)";
 
 
-document.getElementById("confidenceResult").innerHTML =
-"Confidence: " + result.confidence + "%";
+if(data.prediction=="Fake News"){
+
+resultBox.style.color="red";
 
 }
 
+else{
 
-
-async function checkURL(){
-
-const url =
-document.getElementById("urlInput").value;
-
-
-const response = await fetch("/check_url",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-url:url
-})
-
-});
-
-
-const result =
-await response.json();
-
-
-document.getElementById("urlResult").innerHTML =
-result.prediction;
+resultBox.style.color="green";
 
 }
-
-
-
-async function registerUser(){
-
-const username =
-document.getElementById("regUser").value;
-
-
-const password =
-document.getElementById("regPass").value;
-
-
-const response =
-await fetch("/register",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-username:username,
-password:password
-
-})
-
-});
-
-
-const result =
-await response.json();
-
-
-document.getElementById("registerResult").innerHTML =
-result.msg;
 
 }
 
 </script>
 
-
 </body>
 </html>
-

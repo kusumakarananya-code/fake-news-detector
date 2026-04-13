@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Register</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<div class="card">
+
+<h2>Create Account</h2>
+
+
+<input id="regUser"
+placeholder="Username">
+
+
+<input id="regPass"
+type="password"
+placeholder="Password">
+
+
+<button onclick="registerUser()">
+Register
+</button>
+
+
+<h3 id="registerResult"></h3>
+
+
+<p>
+
+Already registered?
+
+<a href="/login">
+
+Login here
+
+</a>
+
+</p>
+
+
+</div>
+
+
+
+
+<script>
+
+
+async function registerUser(){
+
+const username =
+document.getElementById("regUser").value;
+
+
+const password =
+document.getElementById("regPass").value;
+
+
+const response =
+await fetch("/register",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+username:username,
+password:password
+
+})
+
+});
+
+
+const result =
+await response.json();
+
+
+document.getElementById("registerResult").innerHTML =
+result.msg;
+
+}
+
+
+</script>
+
+
+</body>
+</html>

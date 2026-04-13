@@ -1,42 +1,156 @@
-<h2>Login</h2>
+<!DOCTYPE html>
+<html>
 
-<input id="user" placeholder="Username">
-<input id="pass" type="password" placeholder="Password">
+<head>
 
-<button onclick="login()">Login</button>
+<title>Login</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">
+Fake News Detector
+</div>
+
+
+<div class="nav-links">
+
+<a href="/">Home</a>
+<a href="/dataset">Dataset</a>
+<a href="/about">About</a>
+<a href="/contact">Contact</a>
+<a href="/register">Register</a>
+
+</div>
+
+</div>
+
+
+
+<!-- LOGIN CARD -->
+
+<div class="card">
+
+<h2>Login to Your Account</h2>
+
+<p class="subtitle">
+Access dashboard and track predictions
+</p>
+
+
+<input id="user"
+placeholder="Username">
+
+
+<input id="pass"
+type="password"
+placeholder="Password">
+
+
+<button onclick="login()">
+Login
+</button>
+
+
+<p>
+
+Don't have an account?
+
+<a href="/register">
+
+Create one here
+
+</a>
+
+</p>
+
+
+</div>
+
+
 
 <script>
+
+
 async function login() {
-  let username = document.getElementById('user').value;
-  let password = document.getElementById('pass').value;
 
-  if (!username || !password) {
-    alert("Please enter username and password");
-    return;
-  }
+let username =
+document.getElementById('user').value;
 
-  try {
-    let res = await fetch("/login", {   // ✅ FIXED (no localhost)
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
-    });
+let password =
+document.getElementById('pass').value;
 
-    let data = await res.json();
 
-    alert(data.msg);
+if (!username || !password) {
 
-    // ✅ Optional: redirect after login
-    if (data.msg === "Login success") {
-      window.location.href = "/dashboard";
-    }
+alert("Please enter username and password");
 
-  } catch (err) {
-    alert("Login failed. Server error.");
-    console.error(err);
-  }
+return;
+
 }
+
+
+try {
+
+let res =
+await fetch("/login", {
+
+method: "POST",
+
+headers: {
+"Content-Type": "application/json"
+},
+
+body: JSON.stringify({
+
+username: username,
+password: password
+
+})
+
+});
+
+
+let data =
+await res.json();
+
+
+alert(data.msg);
+
+
+if (data.msg === "Login success") {
+
+window.location.href =
+"/dashboard";
+
+}
+
+
+}
+
+catch (err) {
+
+alert("Login failed. Server error.");
+
+console.error(err);
+
+}
+
+
+}
+
 </script>
+
+
+</body>
+</html>
