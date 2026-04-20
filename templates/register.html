@@ -21,7 +21,7 @@ Fake News Detector
 
 <div class="nav-links">
 
-<a href="/">Home</a>
+<a href="/dashboard">Home</a>
 <a href="/about">About</a>
 <a href="/dashboard">Dashboard</a>
 <a href="/dataset">Dataset</a>
@@ -74,26 +74,55 @@ Login here
 
 
 <script>
+
+function registerUser() {
+
+let username = document.getElementById("regUser").value;
+let password = document.getElementById("regPass").value;
+
 fetch("/register", {
+
 method: "POST",
-headers: {"Content-Type": "application/json"},
+
+headers: {
+
+"Content-Type": "application/json"
+
+},
+
 body: JSON.stringify({
+
 username: username,
 password: password
+
 })
+
 })
+
 .then(res => res.json())
+
 .then(data => {
 
-alert(data.msg)
+document.getElementById("registerResult").innerText = data.msg;
 
-if(data.msg === "Registered successfully"){
+if(data.msg === "Registered successfully") {
 
-window.location.href="/login_page"
+window.location.href = "/login_page";
 
 }
 
 })
+
+.catch(err => {
+
+console.log(err);
+
+alert("Registration failed");
+
+});
+
+}
+
 </script>
 
 </body>
