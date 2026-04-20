@@ -29,7 +29,7 @@ Fake News Detector
 <a href="/dataset">Dataset</a>
 <a href="/about">About</a>
 <a href="/contact">Contact</a>
-<a href="/register">Register</a>
+<a href="/register_page">Register</a>
 
 </div>
 
@@ -66,7 +66,7 @@ Login
 
 Don't have an account?
 
-<a href="/register">
+<a href="/register_page">
 
 Create one here
 
@@ -128,7 +128,7 @@ await res.json();
 alert(data.msg);
 
 
-if (data.msg === "Login success") {
+if (data.msg.trim() === "Login success") {
 
 window.location.href =
 "/dashboard";
