@@ -1,5 +1,5 @@
 // ================= NEWS CHECK =================
-async function checkNews() {
+async function predictNews() {
 
   let news = document.getElementById("newsInput").value;
 
@@ -35,7 +35,6 @@ async function checkNews() {
 
 
 
-// ================= URL CHECK =================
 async function checkURL() {
 
   let url = document.getElementById("urlInput").value;
@@ -55,7 +54,8 @@ async function checkURL() {
 
     let data = await res.json();
 
-    alert("Prediction: " + data.prediction);
+    document.getElementById("result").innerHTML =
+      "Prediction: " + data.prediction;
 
   } catch (err) {
 
@@ -68,8 +68,7 @@ async function checkURL() {
 
 
 
-// ================= REGISTER =================
-async function register() {
+async function registerUser() {
 
   let username = document.getElementById("regUser").value;
   let password = document.getElementById("regPass").value;

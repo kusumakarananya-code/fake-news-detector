@@ -13,6 +13,25 @@ href="{{ url_for('static', filename='style.css') }}">
 
 <body>
 
+    <div class="navbar">
+
+<div class="logo">
+Fake News Detector
+</div>
+
+<div class="nav-links">
+
+<a href="/">Home</a>
+<a href="/about">About</a>
+<a href="/dashboard">Dashboard</a>
+<a href="/dataset">Dataset</a>
+<a href="/contact">Contact</a>
+<a href="/login_page">Login</a>
+
+</div>
+
+</div>
+
 
 <div class="card">
 
@@ -40,7 +59,7 @@ Register
 
 Already registered?
 
-<a href="/login">
+<a href="/login_page">
 
 Login here
 
@@ -92,6 +111,10 @@ await response.json();
 
 document.getElementById("registerResult").innerHTML =
 result.msg;
+
+if(result.msg === "User registered successfully"){
+window.location.href = "/login_page";
+}
 
 }
 
