@@ -166,3 +166,10 @@ font-weight:600;
 text-align:center;
 
 }
+
+nav ul {
+display: flex;
+justify-content: center;
+list-style: none;
+gap: 40px;
+}
