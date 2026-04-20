@@ -85,21 +85,25 @@ fetch("/register", {
 method: "POST",
 
 headers: {
-
 "Content-Type": "application/json"
-
 },
 
 body: JSON.stringify({
-
 username: username,
 password: password
-
 })
 
 })
 
-.then(res => res.json())
+.then(res => {
+
+if(!res.ok){
+throw new Error("Server error");
+}
+
+return res.json();
+
+})
 
 .then(data => {
 
@@ -115,7 +119,7 @@ window.location.href = "/login_page";
 
 .catch(err => {
 
-console.log(err);
+console.log("ERROR:", err);
 
 alert("Registration failed");
 
