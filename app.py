@@ -1,14 +1,13 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from pymongo import MongoClient
-from flask import session, redirect, url_for
 from flask_cors import CORS
 from newspaper import Article
 import pickle
 import requests
 import os
 
-app.secret_key = "fake_news_secret_key"
 app = Flask(__name__)
+app.secret_key = "fake_news_secret_key"
 CORS(app)
 
 # MongoDB Connection
