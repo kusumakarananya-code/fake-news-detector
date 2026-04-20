@@ -164,8 +164,7 @@ def about():
 def dashboard():
      if "user" not in session:
         return redirect(url_for("login_page"))
-
-    return render_template("dashboard.html")
+     return render_template("dashboard.html")
     
 
 @app.route('/dataset')
