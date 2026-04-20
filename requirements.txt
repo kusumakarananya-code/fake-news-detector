@@ -1,8 +1,9 @@
 flask
-gunicorn
-pandas
-numpy
-scikit-learn
-requests
 pymongo
 flask-cors
+newspaper3k
+lxml
+lxml_html_clean
+requests
+scikit-learn
+gunicorn
