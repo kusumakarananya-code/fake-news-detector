@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify, render_template
 from pymongo import MongoClient
+from flask import session, redirect, url_for
 from flask_cors import CORS
+from newspaper import Article
 import pickle
 import requests
 import os
 
+app.secret_key = "fake_news_secret_key"
 app = Flask(__name__)
 CORS(app)
 
@@ -65,69 +68,92 @@ def register():
     if not username or not password:
         return jsonify({"msg": "Missing fields"}), 400
 
+    existing_user = users_collection.find_one({"username": username})
+
+    if existing_user:
+        return jsonify({"msg": "User already exists"})
+
     users_collection.insert_one({
         "username": username,
         "password": password
     })
 
-    return jsonify({"msg": "User registered successfully"})
+    return jsonify({"msg": "Registered successfully"})
 
 
 # ================= LOGIN =================
 @app.route('/login', methods=['POST'])
 def login():
-    try:
-        data = request.get_json()
 
-        if not data:
-            return jsonify({"msg": "No data received"}), 400
+    data = request.get_json()
 
-        username = data.get('username')
-        password = data.get('password')
+    username = data.get('username')
+    password = data.get('password')
 
-        print("Login attempt:", username, password)  # 🔍 debug
+    user = users_collection.find_one({
+        "username": username,
+        "password": password
+    })
 
-        if not username or not password:
-            return jsonify({"msg": "Missing fields"}), 400
+    if user:
 
-        user = users_collection.find_one({
-            "username": username,
-            "password": password
-        })
+        session["user"] = username
 
-        if user:
-            print("Login success")
-            return jsonify({"msg": "Login success"})
-        else:
-            print("Invalid login")
-            return jsonify({"msg": "Invalid credentials"})
+        return jsonify({"msg": "Login success"})
 
-    except Exception as e:
-        print("LOGIN ERROR:", str(e))   # 🔥 important
-        return jsonify({"msg": "Server error"}), 500
-
+    return jsonify({"msg": "Invalid credentials"})
 
 # ================= URL CHECK =================
 @app.route('/check_url', methods=['POST'])
 def check_url():
 
-    url = request.form.get('url') or request.json.get('url')
+    try:
 
-    if not url:
-        return jsonify({"error": "No URL provided"}), 400
+        url = request.json.get('url')
 
-    response = requests.get(url)
-    text = response.text[:1000]
+        if not url:
+            return jsonify({
+                "prediction": "No URL provided",
+                "confidence": 0
+            })
 
-    vect = vectorizer.transform([text])
-    pred = model.predict(vect)[0]
+        article = Article(url)
+        article.download()
+        article.parse()
 
-    return jsonify({
-        "prediction": "Fake" if pred == 0 else "Real"
-    })
+        text = article.text
+
+        if not text:
+            return jsonify({
+                "prediction": "Unable to extract article",
+                "confidence": 0
+            })
+
+        vect = vectorizer.transform([text[:2000]])
+
+        pred = model.predict(vect)[0]
+        prob = model.predict_proba(vect)[0].max() * 100
+
+        return jsonify({
+            "prediction": "Fake" if pred == 0 else "Real",
+            "confidence": round(prob, 2)
+        })
+
+    except Exception as e:
+
+        print("URL CHECK ERROR:", str(e))
+
+        return jsonify({
+            "prediction": "Error analyzing article",
+            "confidence": 0
+        })
 
 @app.route('/')
 def home():
+
+    if "user" not in session:
+        return redirect(url_for("register_page"))
+
     return render_template("index.html")
 
 @app.route('/about')
@@ -136,7 +162,11 @@ def about():
 
 @app.route('/dashboard')
 def dashboard():
+     if "user" not in session:
+        return redirect(url_for("login_page"))
+
     return render_template("dashboard.html")
+    
 
 @app.route('/dataset')
 def dataset():

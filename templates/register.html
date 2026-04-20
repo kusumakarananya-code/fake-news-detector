@@ -74,53 +74,27 @@ Login here
 
 
 <script>
+fetch("/register", {
+method: "POST",
+headers: {"Content-Type": "application/json"},
+body: JSON.stringify({
+username: username,
+password: password
+})
+})
+.then(res => res.json())
+.then(data => {
 
+alert(data.msg)
 
-async function registerUser(){
+if(data.msg === "Registered successfully"){
 
-const username =
-document.getElementById("regUser").value;
+window.location.href="/login_page"
 
-
-const password =
-document.getElementById("regPass").value;
-
-
-const response =
-await fetch("/register",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-username:username,
-password:password
+}
 
 })
-
-});
-
-
-const result =
-await response.json();
-
-
-document.getElementById("registerResult").innerHTML =
-result.msg;
-
-if(result.msg === "User registered successfully"){
-window.location.href = "/login_page";
-}
-
-}
-
-
 </script>
-
 
 </body>
 </html>
