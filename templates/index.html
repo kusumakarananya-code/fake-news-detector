@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Fake News Detector</title>
 
-<!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet"
@@ -14,36 +14,67 @@ href="{{ url_for('static', filename='style.css') }}">
 
 <body>
 
+<!-- NAVBAR -->
+
 <div class="navbar">
+
 <div class="logo">Fake News Detector</div>
+
 <div class="nav-links">
 <a href="/">Home</a>
-<a href="/login">Login</a>
-<a href="/register">Register</a>
+<a href="/about">About</a>
+<a href="/dashboard">Dashboard</a>
+<a href="/dataset">Dataset</a>
+<a href="/contact">Contact</a>
+<a href="/login_page">Login</a>
+<a href="/register_page">Register</a>
 </div>
+
 </div>
+
+
+<!-- NEWS TEXT CHECK -->
 
 <div class="container">
+
 <div class="card">
+
 <h2>Check News Authenticity</h2>
-<textarea placeholder="Paste your news here..."></textarea>
-<button onclick="predictNews()">Check Now</button>
-<div class="result" id="result"></div>
-</div>
+
+<textarea id="newsText"
+placeholder="Paste your news here..."></textarea>
+
+<button onclick="predictNews()">Check News</button>
+
+<br><br>
+
+<input type="text"
+id="urlInput"
+placeholder="Enter news URL">
+
+<button onclick="checkURL()">Check URL</button>
+
+<div class="result"
+id="result"></div>
+
 </div>
 
+</div>
+
+
 <script>
+
 
 async function predictNews(){
 
 let news =
-document.querySelector("textarea").value;
+document.getElementById("newsText").value;
 
 let resultBox =
 document.getElementById("result");
 
 resultBox.innerHTML =
-"🔍 Checking authenticity...";
+"Checking authenticity...";
 
 
 let response =
@@ -67,10 +98,13 @@ await response.json();
 
 
 resultBox.innerHTML =
-data.prediction + " (" + data.confidence + "% confidence)";
+data.prediction +
+" (" +
+data.confidence +
+"% confidence)";
 
 
-if(data.prediction=="Fake News"){
+if(data.prediction=="Fake"){
 
 resultBox.style.color="red";
 
@@ -82,15 +116,45 @@ resultBox.style.color="green";
 
 }
 
-<nav>
-<ul>
-<li>Home</li>
-<li>About</li>
-<li>Dashboard</li>
-<li>Dataset</li>
-<li>Contact</li>
-</ul>
-</nav>
+}
+
+
+
+async function checkURL(){
+
+let url =
+document.getElementById("urlInput").value;
+
+let resultBox =
+document.getElementById("result");
+
+
+resultBox.innerHTML =
+"Checking URL...";
+
+
+let response =
+await fetch("/check_url",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+url:url
+})
+
+});
+
+
+let data =
+await response.json();
+
+
+resultBox.innerHTML =
+data.prediction;
 
 }
 

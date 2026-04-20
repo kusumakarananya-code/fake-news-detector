@@ -146,6 +146,15 @@ def dataset():
 def contact():
     return render_template("contact.html")
 
+@app.route('/login_page')
+def login_page():
+    return render_template("login.html")
+
+
+@app.route('/register_page')
+def register_page():
+    return render_template("register.html")
+
 
 # ================= RUN =================
 if __name__ == "__main__":
