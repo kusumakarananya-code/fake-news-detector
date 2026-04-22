@@ -80,46 +80,50 @@ function registerUser() {
 let username = document.getElementById("regUser").value;
 let password = document.getElementById("regPass").value;
 
+if(!username || !password){
+
+alert("Please fill all fields");
+
+return;
+
+}
+
 fetch("/register", {
 
 method: "POST",
 
 headers: {
+
 "Content-Type": "application/json"
+
 },
 
 body: JSON.stringify({
+
 username: username,
 password: password
-})
 
 })
 
-.then(res => {
-
-if(!res.ok){
-throw new Error("Server error");
-}
-
-return res.json();
-
 })
+
+.then(response => response.json())
 
 .then(data => {
 
 document.getElementById("registerResult").innerText = data.msg;
 
-if(data.msg === "Registered successfully") {
+if(data.msg === "Registered successfully"){
 
-window.location.href = "/login_page";
+window.location.href="/login_page";
 
 }
 
 })
 
-.catch(err => {
+.catch(error => {
 
-console.log("ERROR:", err);
+console.log(error);
 
 alert("Registration failed");
 
