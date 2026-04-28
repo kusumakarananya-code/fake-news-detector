@@ -1,9 +1,11 @@
 flask
-pymongo
 flask-cors
+pymongo
 newspaper3k
-lxml
 lxml_html_clean
-requests
 scikit-learn
 gunicorn
+requests
+numpy
+scipy
+joblib
