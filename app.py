@@ -60,24 +60,35 @@ def history():
 # ================= REGISTER =================
 @app.route('/register', methods=['POST'])
 def register():
+    try:
 
-    username = request.form.get('username') or request.json.get('username')
-    password = request.form.get('password') or request.json.get('password')
+        data = request.get_json()
 
-    if not username or not password:
-        return jsonify({"msg": "Missing fields"}), 400
+        username = data.get('username')
+        password = data.get('password')
 
-    existing_user = users_collection.find_one({"username": username})
+        if not username or not password:
+            return jsonify({"msg": "Missing fields"}), 400
 
-    if existing_user:
-        return jsonify({"msg": "User already exists"})
+        existing_user = users_collection.find_one({
+            "username": username
+        })
 
-    users_collection.insert_one({
-        "username": username,
-        "password": password
-    })
+        if existing_user:
+            return jsonify({"msg": "User already exists"})
 
-    return jsonify({"msg": "Registered successfully"})
+        users_collection.insert_one({
+            "username": username,
+            "password": password
+        })
+
+        return jsonify({"msg": "Registered successfully"})
+
+    except Exception as e:
+
+        print("REGISTER ERROR:", str(e))
+
+        return jsonify({"msg": "Registration failed"}), 500
 
 
 # ================= LOGIN =================
