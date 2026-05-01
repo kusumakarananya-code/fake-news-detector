@@ -11,7 +11,7 @@ app.secret_key = "fake_news_secret_key"
 CORS(app)
 
 # MongoDB Connection
-client = MongoClient("mongodb+srv://kusumakarananya_db_user:<Ananya24719>@cluster0.uqyqiay.mongodb.net/?appName=Cluster0y")
+client = MongoClient("mongodb+srv://kusumakarananya_db_user:Ananya24719@cluster0.uqyqiay.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = client["fake_news_project"]
 collection = db["history"]
 users_collection = db["users"]
