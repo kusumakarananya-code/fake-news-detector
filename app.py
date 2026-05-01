@@ -38,7 +38,9 @@ def predict():
 
         collection.insert_one({
             "news": news,
-            "result": result
+            "result": result,
+            "confidence": round(prob, 2)
+
         })
 
         return jsonify({
